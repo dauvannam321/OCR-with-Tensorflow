@@ -1,8 +1,6 @@
 import streamlit as st
 import tensorflow as tf
-import pdf2image
 from PIL import Image, ImageOps
-from annotated_text import annotated_text
 import numpy as np
 img_width = 200
 img_height = 50
