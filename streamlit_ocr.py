@@ -113,6 +113,6 @@ if uploaded is not None:
     col6, col7, col8 = st.columns(3)
     with col7:
         annotated_text(
-        annotation(output[0], font_family="Comic Sans MS", border="2px dashed red", font_size="40px"),
+        annotation(output[0], font_family="Comic Sans MS", border="2px dashed", font_size="40px"),
         )
 
