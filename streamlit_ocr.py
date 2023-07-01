@@ -1,20 +1,16 @@
 import streamlit as st
 import tensorflow as tf
 from PIL import Image, ImageOps
+from annotated_text import annotated_text, annotation
+
 import numpy as np
-img_width = 200
-img_height = 50
-max_len = 5
+img_width = 300
+img_height = 60
+max_len = 24
 int_to_char = ['[UNK]',
- '1',
- '2',
- '3',
- '4',
- '5',
- '6',
- '7',
- '8',
- '9',
+ ' ',
+ "'",
+ '-',
  'A',
  'B',
  'C',
@@ -41,31 +37,21 @@ int_to_char = ['[UNK]',
  'X',
  'Y',
  'Z',
- 'a',
- 'b',
- 'c',
- 'd',
- 'e',
- 'f',
- 'g',
- 'h',
- 'i',
- 'j',
- 'k',
- 'l',
- 'm',
- 'n',
- 'p',
- 'q',
- 'r',
- 's',
- 't',
- 'u',
- 'v',
- 'w',
- 'x',
- 'y',
- 'z']
+ '`']
+def int_to_label_decode(array):
+    # array = array.numpy()
+    res = []
+    for i in array:
+        if i == -1:
+            break
+        else:
+            res.append(int_to_char[i])
+    if res:
+        res = tf.strings.reduce_join(res).numpy().decode('utf-8')
+        return res        
+    else:
+        return 'EMPTY'
+        
 def encode_single_img(img):
     # Read image
     # img = tf.io.read_file(img_path)
@@ -86,39 +72,47 @@ def decode_batch_prediction(pred):
     for res in results:
         
         array = res.numpy()
-        chars = [int_to_char[i] for i in array]
-        res = tf.strings.reduce_join(chars).numpy().decode('utf-8')
-        
+        # chars = [int_to_char[i] for i in array]
+        # res = tf.strings.reduce_join(chars).numpy().decode('utf-8')
+        res = int_to_label_decode(array)
+
         output_text.append(res)
     return output_text
-
-ocr_model = tf.keras.models.load_model('ocr_predict')
-col1, col2 = st.columns([1, 3])
-
-logo = Image.open('logo.png')
-col1.image(logo)
-col2.title('Trang web đọc Captcha')
-st.subheader('Chọn ảnh Captcha muốn đọc (không quá 5 ký tự)')
+st.set_page_config(page_title='Trang web đọc chữ viết', page_icon='icon.png', layout='wide', initial_sidebar_state='expanded')
+ocr_model = tf.keras.models.load_model('CS431_PREDICT_MODEL_HW')
+st.sidebar.image('sideimage.png')
+col1, col2 = st.columns([5, 1])
+# col1.image('sideimage.png')
+# logo = Image.open('logo.png')
+# col1.image(logo)``
+col1.title('TRANG WEB ĐỌC CHỮ VIẾT')
+col1.subheader('Chọn ảnh muốn đọc (tối đa 24 ký tự)')
+col2.image('question.gif')
 uploaded = st.file_uploader('')
 if uploaded is not None:
-    img = Image.open(uploaded)
-    col3, col4, col5 = st.columns(3)
+    with st.spinner():
+        img = Image.open(uploaded)
+        col3, col4, col5 = st.columns(3)
 
-    col4.image(img)
-    img = ImageOps.grayscale(img)
-    img = tf.keras.utils.img_to_array(img).astype('uint8')  
-    img = tf.convert_to_tensor(img)
+        col4.image(img)
    
-    img = encode_single_img(img)
+        img = ImageOps.grayscale(img)
+        img = tf.keras.utils.img_to_array(img).astype('uint8')  
+        img = tf.convert_to_tensor(img)
     
-    img = np.expand_dims(img, axis=0)
+        img = encode_single_img(img)
+        
+        img = np.expand_dims(img, axis=0)
 
-    pred = ocr_model.predict(img)
+        pred = ocr_model.predict(img)
 
-    output = decode_batch_prediction(pred)
-    st.balloons()
-    st.divider()
+        output = decode_batch_prediction(pred)
+        st.balloons()
+        st.divider()
     st.success('Đọc thành công!', icon="✅")
     col6, col7, col8 = st.columns(3)
-    col7.header(output[0])
+    with col7:
+        annotated_text(
+        annotation(output[0], font_family="Comic Sans MS", border="2px dashed red", font_size="40px"),
+        )
 
