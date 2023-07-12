@@ -19,5 +19,4 @@ pip install streamlit
 pip install st-annotated-text
 ```
 <b>Please take a look at [Streamlit documents](https://docs.streamlit.io/) to know how to install and run streamlit scripts.</b>
-Thank you my team for supporting me in choicing dataset, testing, sharing ideas as well as giving feedback about Streamlit UI:
-[Hoang Gia Nguyen](https://github.com/HgThinker), [Xuan Hoang Pham](https://github.com/goldenspring6622), [Van Nam Dau](https://github.com/dauvannam321). Especially [Hoang Gia Nguyen](https://github.com/HgThinker) helping me not onlyin coding.
+
