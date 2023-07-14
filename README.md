@@ -20,3 +20,4 @@ pip install st-annotated-text
 ```
 <b>Please take a look at [Streamlit documents](https://docs.streamlit.io/) to know how to install and run streamlit scripts.</b>
 
+With the support of [Hoang Gia Nguyen](https://github.com/HgThinker), [Van Nam Dau](https://github.com/dauvannam321) and [Xuan Hoang Pham](https://github.com/goldenspring6622).
